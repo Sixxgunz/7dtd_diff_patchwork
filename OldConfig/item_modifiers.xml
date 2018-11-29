@@ -250,6 +250,7 @@ Example of using the seed (creation time) on a weapon to activate an effect
 			<triggered_effect trigger="onSelfHoldingItemCreated" action="AttachPrefabToHeldItem" prefab="Items/Mods/Sides/side_attachment_flashlightPrefab" parent_transform="Attachments/Side"/>
 			<triggered_effect trigger="onSelfItemActivate" action="SetTransformActive" active="true" parent_transform="Side" transform_path="lightSource"/>
 			<triggered_effect trigger="onSelfItemDeactivate" action="SetTransformActive" active="false" parent_transform="Side" transform_path="lightSource"/>
+			<triggered_effect trigger="onSelfEquipStop" action="SetTransformActive" active="false" parent_transform="Side" transform_path="lightSource"/>
 		</effect_group>
 
 		<property name="PickupJournalEntry" value="augmentGunsTip"/>
@@ -651,8 +652,18 @@ Use 762 ammo in smaller caliber guns. 98% chance for the gun to explode on firin
 
 	<item_modifier name="modGunCrippleEm" installable_tags="ranged" modifier_tags="crippling" type="attachment" rarity="0.5">
 		<property name="Stacknumber" value="1"/>
-		<!--Each successive shot has an increased chance to cripple-->
+		<!--Each shot has a chance to cripple-->
 		<effect_group tiered="false">
+			<requirement name="EntityTagCompare" target="other" tags="walker"/>
+			<requirement name="HoldingItemHasTags" tags="shotgun" invert="true"/>
+			<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="20"/>
+				<triggered_effect trigger="onSelfDamagedOther" action="AddBuff" target="other" buff="buffInjuryCrippled1"/>
+		</effect_group>
+		<effect_group tiered="false">
+			<requirement name="EntityTagCompare" target="other" tags="walker"/>
+			<requirement name="HoldingItemHasTags" tags="shotgun"/>
+			<requirement name="RandomRoll" seed_type="Random" min_max="0,800" operation="LTE" value="20"/>
+				<triggered_effect trigger="onSelfDamagedOther" action="AddBuff" target="other" buff="buffInjuryCrippled1"/>
 		</effect_group>
 		<property name="PickupJournalEntry" value="augmentGunsTip"/>
 	</item_modifier>
@@ -817,11 +828,8 @@ Use 762 ammo in smaller caliber guns. 98% chance for the gun to explode on firin
 
 		<!-- Gain HP/sec when under 50% HP -->
 		<effect_group tiered="false">
-			<requirements>
-				<requirement name="StatComparePercCurrentToMax" stat="health" operation="LTE" value=".5"/>
-			</requirements>
-
-			<passive_effect name="HealthChangeOT" operation="perc_add" value="0.2" />
+			<requirement name="StatComparePercCurrentToModMax" stat="health" operation="LTE" value=".5"/>
+			<passive_effect name="HealthChangeOT" operation="base_add" value="0.2" />
 		</effect_group>
 		<property name="PickupJournalEntry" value="augmentGunsTip"/>
 	</item_modifier>
@@ -864,9 +872,10 @@ Use 762 ammo in smaller caliber guns. 98% chance for the gun to explode on firin
 		<property name="PickupJournalEntry" value="augmentGunsTip"/>
 	</item_modifier>
 
-	<item_modifier name="modMeleeClubBurningShaft" installable_tags="club" modifier_tags="fire" type="attachment" rarity="0.5">
+	<item_modifier name="modMeleeClubBurningShaft" installable_tags="melee" modifier_tags="fire" type="attachment" rarity="0.5">
 		<property name="Stacknumber" value="1"/>
-		<property name="CustomIcon" value="meleeToolTorch"/>
+
+		<property name="CustomIcon" value="meleeToolTorch"/> <property name="CustomIconTint" value="255,100,100"/> <!-- temp icon -->
 
 		<effect_group tiered="false" name="Power Attack">
 			<requirement name="RandomRoll" seed_type="Random" target="self" min_max="0,100" operation="LTE" value="30"/>
@@ -882,22 +891,65 @@ Use 762 ammo in smaller caliber guns. 98% chance for the gun to explode on firin
 		<property name="PickupJournalEntry" value="augmentGunsTip"/>
 	</item_modifier>
 
+	<item_modifier name="modMeleeGraveDigger" installable_tags="melee" modifier_tags="damageDirt" type="attachment" rarity="0.5">
+
+		<property name="CustomIcon" value="resourceClayLump"/> <property name="CustomIconTint" value="255,100,100"/> <!-- temp icon -->
+
+		<property name="Stacknumber" value="1"/>
+		<effect_group tiered="false">
+			<passive_effect name="DamageModifier" operation="perc_add" value=".5" tags="earth"/>
+		</effect_group>
+		<property name="PickupJournalEntry" value="augmentGunsTip"/>
+	</item_modifier>
+
+	<item_modifier name="modMeleeBunkerBuster" installable_tags="melee" modifier_tags="damageStone" type="attachment" rarity="0.5">
+
+		<property name="CustomIcon" value="resourceRockSmall"/> <property name="CustomIconTint" value="255,100,100"/> <!-- temp icon -->
+
+		<property name="Stacknumber" value="1"/>
+		<effect_group tiered="false">
+			<passive_effect name="DamageModifier" operation="perc_add" value=".5" tags="stone"/>
+		</effect_group>
+		<property name="PickupJournalEntry" value="augmentGunsTip"/>
+	</item_modifier>
+
+	<item_modifier name="modMeleeIronBreaker" installable_tags="melee" modifier_tags="damageIron" type="attachment" rarity="0.5">
+
+		<property name="CustomIcon" value="resourceIronFragment"/> <property name="CustomIconTint" value="255,100,100"/> <!-- temp icon -->
+
+		<property name="Stacknumber" value="1"/>
+		<effect_group tiered="false">
+			<passive_effect name="DamageModifier" operation="perc_add" value=".5" tags="metal"/>
+		</effect_group>
+		<property name="PickupJournalEntry" value="augmentGunsTip"/>
+	</item_modifier>
+
+	<item_modifier name="modMeleeWoodSplitter" installable_tags="melee" modifier_tags="damageWood" type="attachment" rarity="0.5">
+
+		<property name="CustomIcon" value="resourceWood"/> <property name="CustomIconTint" value="255,100,100"/> <!-- temp icon -->
+
+		<property name="Stacknumber" value="1"/>
+		<effect_group tiered="false">
+			<passive_effect name="DamageModifier" operation="perc_add" value=".5" tags="wood"/>
+		</effect_group>
+		<property name="PickupJournalEntry" value="augmentGunsTip"/>
+	</item_modifier>
+
 	<!-- = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = -->
 
 	<!--Clothing Attachments-->
-	<item_modifier name="modArmorBandolier" installable_tags="chest,leg" modifier_tags="light" type="attachment" rarity="0.5">
+	<item_modifier name="modArmorBandolier" installable_tags="armorChest" modifier_tags="ammo" type="attachment" rarity="0.5">
 		<property name="Stacknumber" value="1"/>
-
-		<!--Reload Guns X% faster-->
+		<!-- Reload Guns X% faster;  would like to add it to "legs" but buffs dont stack like that -->
 		<effect_group tiered="false">
-			<passive_effect name="ReloadSpeedMultiplier" operation="perc_add" value=".3"/>
+			<triggered_effect trigger="onSelfEquipStart" action="AddBuff" buff="buffBandolier"/>
+			<triggered_effect trigger="onSelfEquipStop" action="RemoveBuff" buff="buffBandolier"/>
 		</effect_group>
 		<property name="PickupJournalEntry" value="augmentGunsTip"/>
 	</item_modifier>
 
 	<item_modifier name="modYoureFired" installable_tags="armor" modifier_tags="resistance" type="attachment" rarity="0.5">
 		<property name="Stacknumber" value="1"/>
-
 		<!--Increase fire resistance by x%.-->
 		<effect_group tiered="false">
 			<passive_effect name="ElementalDamageResist" operation="perc_add" value=".5" tags="heat"/>
@@ -1047,7 +1099,7 @@ Use 762 ammo in smaller caliber guns. 98% chance for the gun to explode on firin
 		</effect_group>
 	</item_modifier>
 
-	<item_modifier name="modArmorSpikedKnuckles" installable_tags="armor,hands" modifier_tags="damage" type="attachment" rarity="0.5">
+	<item_modifier name="modArmorSpikedKnuckles" installable_tags="armorHands" modifier_tags="damage" type="attachment" rarity="0.5">
 		<property name="DisplayType" value="modCarryCapacity"/>
 		<property name="Material" value="Msteel"/>
 		<property name="Stacknumber" value="1"/>
@@ -1088,7 +1140,7 @@ Use 762 ammo in smaller caliber guns. 98% chance for the gun to explode on firin
 		</effect_group>
 	</item_modifier>
 
-	<item_modifier name="modArmorWaterPurifier" installable_tags="armor,head" modifier_tags="misc" type="attachment" rarity="0.5">
+	<item_modifier name="modArmorWaterPurifier" installable_tags="armorHead" modifier_tags="misc" type="attachment" rarity="0.5">
 		<property name="Stacknumber" value="1"/>
 		<property name="Material" value="Msteel"/>
 
@@ -1124,7 +1176,7 @@ Use 762 ammo in smaller caliber guns. 98% chance for the gun to explode on firin
 		</effect_group>
 	</item_modifier>
 
-	<item_modifier name="modArmorHelmetLight" installable_tags="head" blocked_tags="clothing" modifier_tags="misc" type="attachment" rarity="0.5">
+	<item_modifier name="modArmorHelmetLight" installable_tags="armorHead" blocked_tags="clothing" modifier_tags="misc" type="attachment" rarity="0.5">
 		<property name="Stacknumber" value="1"/>
 		<property name="Material" value="Msteel"/>
 		<effect_group>
@@ -1159,13 +1211,16 @@ Use 762 ammo in smaller caliber guns. 98% chance for the gun to explode on firin
 	<!-- = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = -->
 
 	<item_modifier name="modDyeWhite" installable_tags="clothing,armor,weapon,tool" modifier_tags="dye" type="attachment" rarity="0.2">
+		<property name="Stacknumber" value="1"/>
 		<property name="CreativeMode" value="None"/>
 		<property name="DescriptionKey" value="modDyeGroupDesc"/>
 		<property name="PickupJournalEntry" value="augmentGunsTip"/>
+		<property name="Stacknumber" value="1"/>
 	</item_modifier>
 
 	<item_modifier name="modDyeRed" installable_tags="clothing,armor,weapon,tool" modifier_tags="dye" type="attachment" rarity="0.2">
 		<property name="DescriptionKey" value="modDyeGroupDesc"/>
+		<property name="Stacknumber" value="1"/>
 
 		<item_property_overrides name="*">
 			<property name="TintColor" value="255,0,0"/>
@@ -1197,6 +1252,7 @@ Use 762 ammo in smaller caliber guns. 98% chance for the gun to explode on firin
 
 	<item_modifier name="modDyeGreen" installable_tags="clothing,armor,weapon,tool,vehicle" modifier_tags="dye" type="attachment" rarity="0.2">
 		<property name="DescriptionKey" value="modDyeGroupDesc"/>
+		<property name="Stacknumber" value="1"/>
 
 		<item_property_overrides name="*">
 			<property name="TintColor" value="0,255,0"/>
@@ -1229,6 +1285,7 @@ Use 762 ammo in smaller caliber guns. 98% chance for the gun to explode on firin
 
 	<item_modifier name="modDyeBlack" installable_tags="clothing,armor,weapon,tool,vehicle" modifier_tags="dye" type="attachment" rarity="0.9">
 		<property name="DescriptionKey" value="modDyeGroupDesc"/>
+		<property name="Stacknumber" value="1"/>
 
 		<item_property_overrides name="*">
 			<property name="TintColor" value="70,70,70"/>
@@ -1286,6 +1343,7 @@ Use 762 ammo in smaller caliber guns. 98% chance for the gun to explode on firin
 
 	<item_modifier name="modDyeBlue" installable_tags="clothing,armor,weapon,tool,vehicle" modifier_tags="dye" type="attachment" rarity="0.2">
 		<property name="DescriptionKey" value="modDyeGroupDesc"/>
+		<property name="Stacknumber" value="1"/>
 
 		<item_property_overrides name="*">
 			<property name="TintColor" value="0,0,255"/>
@@ -1315,6 +1373,7 @@ Use 762 ammo in smaller caliber guns. 98% chance for the gun to explode on firin
 		<property name="DescriptionKey" value="modDyeGroupDesc"/>
 		<property name="CustomIcon" value="modDyeRed"/>
 		<property name="CustomIconTint" value="90,105,84"/>
+		<property name="Stacknumber" value="1"/>
 
 		<item_property_overrides name="*">
 			<property name="TintColor" value="132,105,84"/>
@@ -1335,6 +1394,34 @@ Use 762 ammo in smaller caliber guns. 98% chance for the gun to explode on firin
 		<item_property_overrides name="denimShortsPants">
 			<property name="UMA.Overlay0Tint" value="skin"/>
 			<property name="UMA.Overlay1Tint" value="132,105,84"/>
+		</item_property_overrides>
+		<property name="PickupJournalEntry" value="augmentGunsTip"/>
+	</item_modifier>
+
+	<item_modifier name="modDyePink" installable_tags="clothing,armor,weapon,tool,vehicle" modifier_tags="dye" type="attachment" rarity="0.2">
+		<property name="DescriptionKey" value="modDyeGroupDesc"/>
+		<property name="CustomIcon" value="modDyeRed"/>
+		<property name="CustomIconTint" value="255,85,180"/>
+		<property name="Stacknumber" value="1"/>
+		<item_property_overrides name="*">
+			<property name="TintColor" value="255,0,255"/>
+			<property name="CustomIconTint" value="255,0,255"/>
+			<property name="UMA.Overlay0Tint" value="255,0,255"/>
+		</item_property_overrides>
+
+		<item_property_overrides name="tankTop">
+			<property name="UMA.Overlay0Tint" value="skin"/>
+			<property name="UMA.Overlay0Tint" value="255,0,255"/>
+		</item_property_overrides>
+
+		<item_property_overrides name="tshirt">
+			<property name="UMA.Overlay0Tint" value="skin"/>
+			<property name="UMA.Overlay0Tint" value="255,0,255"/>
+		</item_property_overrides>
+
+		<item_property_overrides name="denimShortsPants">
+			<property name="UMA.Overlay0Tint" value="skin"/>
+			<property name="UMA.Overlay0Tint" value="255,0,255"/>
 		</item_property_overrides>
 		<property name="PickupJournalEntry" value="augmentGunsTip"/>
 	</item_modifier>
