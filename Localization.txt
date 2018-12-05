@@ -3649,8 +3649,6 @@ meleeToolWireToolDesc,items,Tool,New,Use the wire tool to wire electrical compon
 meleeToolWrench,items,Tool,KgNone,Wrench,Clé à molette,Schraubenschlüssel,,Llave inglesa,
 meleeToolWrenchAdmin,items,Tool,New,Dev: Super Wrench,,,,,
 meleeToolWrenchDesc,items,Tool,KgNone,"Great for disassembling mechanical devices like cars, air conditioners and more. Can also be used to repair and upgrade walls.\nRepair with Forged Steel.","Parfaite pour désassembler voitures, climatiseurs et autres. Sert également à réparer et améliorer les murs.","Ist toll, um mechanische Geräte wie Autos, Klimaanlagen usw. auseinanderzunehmen. Kann auch dazu benutzt werden, Mauern zu reparieren und aufzuwerten.",,"Perfecta para desarmar aparatos mecánicos como coches, aires acondicionados y mucho más. También se puede usar para reparar y mejorar paredes.",
-meleeToolLockpick,items,Tool,New,Crude Lockpick,,,,,
-meleeToolLockpickDesc,items,Melee,KgNone,"SixxGunZ Prefered tool of choice for every locked device on scavenging expeditions.\nRepair with Iron.",,,,,,
 qt_claude,items,Treasure Map,KgNone,Claude's Treasure Map,La carte au trésor de Claude,Claudes Schatzkarte,,Mapa del tesoro de Claude,
 qt_desc,items,Treasure Map,KgNone,A ragged old treasure map I found with some scribbling on it.,Une vieille carte au trésor ornée de gribouillages que j'ai trouvée.,"Eine alte, vergilbte Schatzkarte mit ein paar Kritzeleien, die ich gefunden habe.",,Un viejo mapa del tesoro arrugado y con garabatos que encontré por ahí.,
 qt_jennifer,items,Treasure Map,KgNone,Jennifer's Treasure Map,La carte au trésor de Jennifer,Jennifers Schatzkarte,,Mapa del tesoro de Jennifer,
